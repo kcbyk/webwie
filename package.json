@@ -1,17 +1,16 @@
 {
-  "name": "tiktok-embed",
+  "name": "solenz-studio-tiktok-wrapper",
   "version": "1.0.0",
-  "description": "TikTok embed web application",
+  "description": "Solenz Studio TikTok Desktop Wrapper",
+  "main": "main.js",
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js"
+    "start": "electron .",
+    "dev": "electron . --dev"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "express": "^4.21.1",
-    "http-proxy": "^1.18.1",
-    "http-proxy-middleware": "^3.0.3"
+  "keywords": ["electron", "tiktok", "wrapper"],
+  "author": "Solenz Studio",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^33.2.1"
   }
 }

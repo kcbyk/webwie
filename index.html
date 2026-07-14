@@ -1,19 +1,139 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Solenz Studio - TikTok Wrapper</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      width: 100vw;
+      height: 100vh;
+      background-color: #000000;
+      color: white;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow: hidden;
+    }
+    
+    /* Üst kontrol paneli */
+    .control-panel {
+      height: 60px;
+      background: linear-gradient(90deg, #1a1a1a, #0d0d0d);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      padding: 0 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    .control-panel button {
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(139,92,246,0.4);
+    }
+    
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444, #dc2626);
+      color: white;
+    }
+    
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(239,68,68,0.4);
+    }
+    
+    .btn-success {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: white;
+    }
+    
+    .btn-success:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(16,185,129,0.4);
+    }
+    
+    /* Webview */
+    webview {
+      width: 100%;
+      height: calc(100vh - 60px);
+      border: none;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <iframe id="tiktok-frame" src="about:blank" frameborder="0"></iframe>
-        <div class="loader" id="loader">
-            <div class="spinner"></div>
-            <p>Bağlanıyor...</p>
-        </div>
-    </div>
-    <script src="script.js"></script>
+  <div class="control-panel">
+    <button class="btn-success" id="remove-ads-btn">Reklamları Kaldır</button>
+    <button class="btn-primary" id="capture-videos-btn">Video Linklerini Yakala</button>
+    <button class="btn-primary" id="start-scroll-btn">Otomatik Kaydırmayı Başlat</button>
+    <button class="btn-danger" id="stop-scroll-btn">Kaydırmayı Durdur</button>
+  </div>
+  
+  <!-- TikTok webview -->
+  <webview
+    id="tiktok-webview"
+    src="https://www.tiktok.com"
+    preload="preload.js"
+    allowpopups
+    webpreferences="webSecurity=no, allowRunningInsecureContent=yes"
+  ></webview>
+  
+  <script>
+    // DOM elementlerini seç
+    const webview = document.getElementById('tiktok-webview');
+    const removeAdsBtn = document.getElementById('remove-ads-btn');
+    const captureVideosBtn = document.getElementById('capture-videos-btn');
+    const startScrollBtn = document.getElementById('start-scroll-btn');
+    const stopScrollBtn = document.getElementById('stop-scroll-btn');
+    
+    // Webview hazır olduğunda
+    webview.addEventListener('dom-ready', () => {
+      console.log('[Solenz Studio] TikTok webview hazır!');
+    });
+    
+    // Buton eventleri
+    removeAdsBtn.addEventListener('click', () => {
+      webview.executeJavaScript(`window.solenzAPI.removeAds()`);
+    });
+    
+    captureVideosBtn.addEventListener('click', () => {
+      webview.executeJavaScript(`window.solenzAPI.captureVideoLinks()`);
+    });
+    
+    startScrollBtn.addEventListener('click', () => {
+      webview.executeJavaScript(`window.solenzAPI.startAutoScroll()`);
+    });
+    
+    stopScrollBtn.addEventListener('click', () => {
+      webview.executeJavaScript(`window.solenzAPI.stopAutoScroll()`);
+    });
+    
+    // Preload'dan mesaj al (örneğin video linkleri)
+    if (window.solenzAPI) {
+      window.solenzAPI.onMessage('video-links-captured', (videoLinks) => {
+        console.log('[Solenz Studio] Yakalanan video linkleri:', videoLinks);
+        alert(`${videoLinks.length} video linki yakalandı! Konsolu kontrol et.`);
+      });
+    }
+  </script>
 </body>
 </html>
