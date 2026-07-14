@@ -96,27 +96,91 @@ function createWindow() {
 
 // IPC handlers for preload/api calls
 ipcMain.handle('remove-ads', async () => {
+  console.log('[Solenz Main] Handling remove-ads call...');
   if (tiktokView) {
-    return tiktokView.webContents.executeJavaScript(`window.solenzAPI.removeAds()`);
+    try {
+      const result = await tiktokView.webContents.executeJavaScript(`
+        if (window.solenzAPI) {
+          window.solenzAPI.removeAds();
+        } else {
+          console.error('[Solenz Main] solenzAPI not found!');
+          { success: false, error: 'solenzAPI not found' };
+        }
+      `);
+      console.log('[Solenz Main] remove-ads result:', result);
+      return result;
+    } catch (err) {
+      console.error('[Solenz Main] remove-ads error:', err);
+      return { success: false, error: err.message };
+    }
   }
+  return { success: false, error: 'tiktokView not available' };
 });
 
 ipcMain.handle('capture-videos', async () => {
+  console.log('[Solenz Main] Handling capture-videos call...');
   if (tiktokView) {
-    return tiktokView.webContents.executeJavaScript(`window.solenzAPI.captureVideoLinks()`);
+    try {
+      const result = await tiktokView.webContents.executeJavaScript(`
+        if (window.solenzAPI) {
+          window.solenzAPI.captureVideoLinks();
+        } else {
+          console.error('[Solenz Main] solenzAPI not found!');
+          { success: false, error: 'solenzAPI not found' };
+        }
+      `);
+      console.log('[Solenz Main] capture-videos result:', result);
+      return result;
+    } catch (err) {
+      console.error('[Solenz Main] capture-videos error:', err);
+      return { success: false, error: err.message };
+    }
   }
+  return { success: false, error: 'tiktokView not available' };
 });
 
 ipcMain.handle('start-scroll', async () => {
+  console.log('[Solenz Main] Handling start-scroll call...');
   if (tiktokView) {
-    return tiktokView.webContents.executeJavaScript(`window.solenzAPI.startAutoScroll()`);
+    try {
+      const result = await tiktokView.webContents.executeJavaScript(`
+        if (window.solenzAPI) {
+          window.solenzAPI.startAutoScroll();
+        } else {
+          console.error('[Solenz Main] solenzAPI not found!');
+          { success: false, error: 'solenzAPI not found' };
+        }
+      `);
+      console.log('[Solenz Main] start-scroll result:', result);
+      return result;
+    } catch (err) {
+      console.error('[Solenz Main] start-scroll error:', err);
+      return { success: false, error: err.message };
+    }
   }
+  return { success: false, error: 'tiktokView not available' };
 });
 
 ipcMain.handle('stop-scroll', async () => {
+  console.log('[Solenz Main] Handling stop-scroll call...');
   if (tiktokView) {
-    return tiktokView.webContents.executeJavaScript(`window.solenzAPI.stopAutoScroll()`);
+    try {
+      const result = await tiktokView.webContents.executeJavaScript(`
+        if (window.solenzAPI) {
+          window.solenzAPI.stopAutoScroll();
+        } else {
+          console.error('[Solenz Main] solenzAPI not found!');
+          { success: false, error: 'solenzAPI not found' };
+        }
+      `);
+      console.log('[Solenz Main] stop-scroll result:', result);
+      return result;
+    } catch (err) {
+      console.error('[Solenz Main] stop-scroll error:', err);
+      return { success: false, error: err.message };
+    }
   }
+  return { success: false, error: 'tiktokView not available' };
 });
 
 // Electron hazır olduğunda pencereyi oluştur

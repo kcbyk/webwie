@@ -92,22 +92,39 @@
     
     // Buton eventleri
     removeAdsBtn.addEventListener('click', async () => {
-      await ipcRenderer.invoke('remove-ads');
+      const result = await ipcRenderer.invoke('remove-ads');
+      if (result && result.success) {
+        alert(`✅ ${result.removedCount} reklam gizlendi!`);
+      } else {
+        alert(`❌ Hata: ${result?.error || 'Bilinmeyen hata'}`);
+      }
     });
     
     captureVideosBtn.addEventListener('click', async () => {
       const videoLinks = await ipcRenderer.invoke('capture-videos');
-      if (videoLinks) {
-        alert(`${videoLinks.length} video linki yakalandı! Konsolu kontrol et.`);
+      if (videoLinks && videoLinks.length) {
+        alert(`✅ ${videoLinks.length} video linki yakalandı! Konsolu kontrol et.`);
+      } else {
+        alert('❌ Video bulunamadı!');
       }
     });
     
     startScrollBtn.addEventListener('click', async () => {
-      await ipcRenderer.invoke('start-scroll');
+      const result = await ipcRenderer.invoke('start-scroll');
+      if (result && result.success) {
+        alert('✅ Otomatik kaydırma başladı!');
+      } else {
+        alert(`❌ Hata: ${result?.message || 'Bilinmeyen hata'}`);
+      }
     });
     
     stopScrollBtn.addEventListener('click', async () => {
-      await ipcRenderer.invoke('stop-scroll');
+      const result = await ipcRenderer.invoke('stop-scroll');
+      if (result && result.success) {
+        alert('✅ Otomatik kaydırma durduruldu!');
+      } else {
+        alert(`❌ Hata: ${result?.message || 'Bilinmeyen hata'}`);
+      }
     });
   </script>
 </body>
