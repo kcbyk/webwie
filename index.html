@@ -13,7 +13,7 @@
     
     body {
       width: 100vw;
-      height: 100vh;
+      height: 60px; /* Sadece kontrol paneli için */
       background-color: #000000;
       color: white;
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -71,13 +71,6 @@
       transform: translateY(-2px);
       box-shadow: 0 5px 15px rgba(16,185,129,0.4);
     }
-    
-    /* Webview */
-    webview {
-      width: 100%;
-      height: calc(100vh - 60px);
-      border: none;
-    }
   </style>
 </head>
 <body>
@@ -88,52 +81,34 @@
     <button class="btn-danger" id="stop-scroll-btn">Kaydırmayı Durdur</button>
   </div>
   
-  <!-- TikTok webview -->
-  <webview
-    id="tiktok-webview"
-    src="https://www.tiktok.com"
-    preload="preload.js"
-    allowpopups
-    webpreferences="webSecurity=no, allowRunningInsecureContent=yes"
-  ></webview>
-  
   <script>
+    const { ipcRenderer } = require('electron');
+
     // DOM elementlerini seç
-    const webview = document.getElementById('tiktok-webview');
     const removeAdsBtn = document.getElementById('remove-ads-btn');
     const captureVideosBtn = document.getElementById('capture-videos-btn');
     const startScrollBtn = document.getElementById('start-scroll-btn');
     const stopScrollBtn = document.getElementById('stop-scroll-btn');
     
-    // Webview hazır olduğunda
-    webview.addEventListener('dom-ready', () => {
-      console.log('[Solenz Studio] TikTok webview hazır!');
-    });
-    
     // Buton eventleri
-    removeAdsBtn.addEventListener('click', () => {
-      webview.executeJavaScript(`window.solenzAPI.removeAds()`);
+    removeAdsBtn.addEventListener('click', async () => {
+      await ipcRenderer.invoke('remove-ads');
     });
     
-    captureVideosBtn.addEventListener('click', () => {
-      webview.executeJavaScript(`window.solenzAPI.captureVideoLinks()`);
-    });
-    
-    startScrollBtn.addEventListener('click', () => {
-      webview.executeJavaScript(`window.solenzAPI.startAutoScroll()`);
-    });
-    
-    stopScrollBtn.addEventListener('click', () => {
-      webview.executeJavaScript(`window.solenzAPI.stopAutoScroll()`);
-    });
-    
-    // Preload'dan mesaj al (örneğin video linkleri)
-    if (window.solenzAPI) {
-      window.solenzAPI.onMessage('video-links-captured', (videoLinks) => {
-        console.log('[Solenz Studio] Yakalanan video linkleri:', videoLinks);
+    captureVideosBtn.addEventListener('click', async () => {
+      const videoLinks = await ipcRenderer.invoke('capture-videos');
+      if (videoLinks) {
         alert(`${videoLinks.length} video linki yakalandı! Konsolu kontrol et.`);
-      });
-    }
+      }
+    });
+    
+    startScrollBtn.addEventListener('click', async () => {
+      await ipcRenderer.invoke('start-scroll');
+    });
+    
+    stopScrollBtn.addEventListener('click', async () => {
+      await ipcRenderer.invoke('stop-scroll');
+    });
   </script>
 </body>
 </html>
