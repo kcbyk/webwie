@@ -1,0 +1,16 @@
+{
+  "name": "tiktok-embed",
+  "version": "1.0.0",
+  "description": "TikTok embed web application",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.21.1",
+    "http-proxy-middleware": "^3.0.3"
+  }
+}
